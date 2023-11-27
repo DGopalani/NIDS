@@ -1,0 +1,41 @@
+UDPLag
+(370605, 5) (5941, 5)
+(370605, 1) (5941, 1)
+
+UDP
+(3136802, 5) (3757814, 5)
+(3136802, 1) (3757814, 1)
+ Label
+Syn       1582289
+BENIGN        392
+Name: count, dtype: int64
+ Label
+Syn       4284751
+BENIGN      35790
+Name: count, dtype: int64
+
+SYN
+(1582681, 5) (4320541, 5)
+(1582681, 1) (4320541, 1)
+ Label
+3    606749
+2    112475
+0      4068
+1      1873
+Name: count, dtype: int64
+UDPLag + UDP
+(5090088, 11) (725165, 11)
+(5090088, 1) (725165, 1)
+Length of y_test_pred_combined: 725165
+Length of test_y: 725165
+Combined Model Metrics:
+Combined Accuracy: 0.9702605613894769
+Combined Precision: 0.5964651295974399
+Combined Recall: 0.5785405561426863
+Combined Confusion Matrix:
+[[  3599    107    310     31     21]
+ [     9    117   1746      1      0]
+ [     6   3114 109355      0      0]
+ [     1  16135     85 590528      0]
+ [     0      0      0      0      0]]
+This was new!

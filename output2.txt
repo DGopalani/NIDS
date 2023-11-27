@@ -1,0 +1,34 @@
+UDPLag
+(370605, 5) (5941, 5)
+(370605, 1) (5941, 1)
+
+UDP
+(3136802, 5) (3757814, 5)
+(3136802, 1) (3757814, 1)
+
+SYN
+(1582681, 5) (4320541, 5)
+(1582681, 1) (4320541, 1)
+ Label
+3    606749
+2    112475
+0      4068
+1      1873
+Name: count, dtype: int64
+UDPLag + UDP + Syn
+(5090088, 11) (725165, 11)
+(5090088, 1) (725165, 1)
+Length of y_test_pred_combined: 725165
+Length of test_y: 725165
+Combined Model Metrics:
+Combined Accuracy: 0.9686967793536644
+Combined Precision: 0.5965692213845435
+Combined Recall: 0.5859409091793812
+Combined False Positive Rate: 0.02118754904525242
+Combined Confusion Matrix:
+[[  3742     81    214     21     10]
+ [    10    123   1739      1      0]
+ [     6   3009 109460      0      0]
+ [     2  17524     83 589140      0]
+ [     0      0      0      0      0]]
+This was new!
