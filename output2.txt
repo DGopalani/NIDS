@@ -9,6 +9,20 @@ UDP
 SYN
 (1582681, 5) (4320541, 5)
 (1582681, 1) (4320541, 1)
+
+MSSQL
+(4524498, 2) (5765855, 2)
+(4524498, 1) (5765855, 1)
+Training time:  3.4026119709014893
+Testing time:  0.9577541351318359
+Train score is: 0.9999306000356283
+Test score is: 0.9977280039126895
+Precision: 0.5738584827261102
+Recall: 0.8859976524008346
+False Positive Rate: 0.22584108804581246
+Confusion Matrix:
+[[   2163     631]
+ [  12469 5750592]]
  Label
 3    606749
 2    112475
@@ -16,19 +30,19 @@ SYN
 1      1873
 Name: count, dtype: int64
 UDPLag + UDP + Syn
-(5090088, 11) (725165, 11)
-(5090088, 1) (725165, 1)
+(9614586, 12) (725165, 12)
+(9614586, 1) (725165, 1)
 Length of y_test_pred_combined: 725165
 Length of test_y: 725165
 Combined Model Metrics:
-Combined Accuracy: 0.9686967793536644
-Combined Precision: 0.5965692213845435
-Combined Recall: 0.5859409091793812
-Combined False Positive Rate: 0.02118754904525242
+Combined Accuracy: 0.9080292071459599
+Combined Precision: 0.5950948440433198
+Combined Recall: 0.5001195235884339
+Combined False Positive Rate: 0.0059508408796895215
 Combined Confusion Matrix:
-[[  3742     81    214     21     10]
- [    10    123   1739      1      0]
- [     6   3009 109460      0      0]
- [     2  17524     83 589140      0]
+[[  3842     23    173     18     12]
+ [    11     56   1228      0    578]
+ [     8     27  61777      1  50662]
+ [     3  13861     41 592796     48]
  [     0      0      0      0      0]]
 This was new!

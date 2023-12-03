@@ -11,11 +11,12 @@ from sklearn.preprocessing import MinMaxScaler
 import UDPLag
 import UDP
 import SYN
+import MSSQL
 
 #Overall training dataset - contains UDP and UDPLag and SYN data
-frames = [UDP.UDP_df, UDPLag.UDPLag_df, SYN.SYN_df]
+frames = [UDP.UDP_df, UDPLag.UDPLag_df, SYN.SYN_df, MSSQL.MSSQL_df]
 #set vars to keep to UDP_vars_to_keep + UDPLag_vars_to_keep - Label
-vars_to_keep = UDP.UDP_vars_to_keep + UDPLag.UDPLag_vars_to_keep[:-1] + SYN.SYN_vars_to_keep[:-1]
+vars_to_keep = UDP.UDP_vars_to_keep + UDPLag.UDPLag_vars_to_keep[:-1] + SYN.SYN_vars_to_keep[:-1] + MSSQL.MSSQL_vars_to_keep[:-1]
 vars_to_keep = list(set(vars_to_keep))
 #filter df based on filter list defined above
 df = pd.concat(frames)
@@ -30,7 +31,7 @@ test_df.rename(columns={'_bInit_Winytes_forward': 'Init_Win_bytes_forward'}, inp
 #make testing filtered df based on vars_to_keep
 test_df_filtered = test_df[vars_to_keep]
 #keep only 0, 1, and 4 in Label column of test_df_filtered
-test_df_filtered = test_df_filtered[test_df_filtered[' Label'].isin([0, 1, 2, 3, 4, 5])]
+#test_df_filtered = test_df_filtered[test_df_filtered[' Label'].isin([0, 1, 2, 3, 4, 5])]
 
 print(test_df_filtered[' Label'].value_counts())
 

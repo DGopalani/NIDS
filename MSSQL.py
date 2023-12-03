@@ -82,3 +82,5 @@ def run_model():
     print("False Positive Rate:", false_positive_rate)
     print("Confusion Matrix:")
     print(conf_matrix)
+
+run_model()
