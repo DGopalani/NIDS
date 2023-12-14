@@ -57,7 +57,7 @@ print(MSSQL_y_train.shape, MSSQL_y_test.shape)
 
 def run_model():
     #Train on MSSQL data
-    clfr = RandomForestClassifier(n_estimators = 5)
+    clfr = RandomForestClassifier(n_estimators = 2)
     start_time = time.time()
     clfr.fit(MSSQL_X_train, MSSQL_y_train.values.ravel())
     end_time = time.time()
@@ -83,4 +83,3 @@ def run_model():
     print("Confusion Matrix:")
     print(conf_matrix)
 
-run_model()

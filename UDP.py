@@ -50,7 +50,6 @@ UDP_X_train = UDP_sc.fit_transform(UDP_X_train)
 #Prepare UDP test data
 UDP_y_test = UDP_test_df_filtered[[' Label']]
 UDP_X_test = UDP_test_df_filtered.drop(columns=[' Label'], axis=1)
-UDP_sc = MinMaxScaler()
 UDP_X_test = UDP_sc.fit_transform(UDP_X_test)
 
 #print data shapes
@@ -84,3 +83,5 @@ def run_model():
     print("False Positive Rate:", false_positive_rate)
     print("Confusion Matrix:")
     print(conf_matrix)
+
+run_model()
