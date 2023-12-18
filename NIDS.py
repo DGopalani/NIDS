@@ -6,12 +6,16 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import seaborn as sns 
 import time 
+import shap
 from sklearn.model_selection import train_test_split 
 from sklearn.preprocessing import MinMaxScaler 
+from sklearn.ensemble import StackingClassifier, RandomForestClassifier
+from treeinterpreter import treeinterpreter as ti
 #import UDPLag
 import UDP
 #import SYN
 import MSSQL
+
 
 #Overall training dataset - contains UDP and UDPLag and SYN data
 frames = [UDP.UDP_df, MSSQL.MSSQL_df]
@@ -23,12 +27,13 @@ df = pd.concat(frames)
 df_filtered = df[vars_to_keep]
 
 #print df_filtered label value counts
+print("Training Label Value Counts:")
 print(df_filtered[' Label'].value_counts())
 
 #Overall test dataset
 test_df = pd.read_csv('Data/03-11/UDP.csv')
 #apply feature mapping on label column
-test_df[' Label'] = test_df[' Label'].map({'BENIGN': 0, 'UDPLag': 1, 'UDP': 2, 'Syn': 3, 'WebDDoS': 4, 'MSSQL': 2})
+test_df[' Label'] = test_df[' Label'].map({'BENIGN': 0, 'UDPLag': 1, 'UDP': 2, 'Syn': 3, 'WebDDoS': 4, 'MSSQL': 5})
 #rename wrongly named column for consistency
 #test_df.rename(columns={'_bInit_Winytes_forward': 'Init_Win_bytes_forward'}, inplace=True)
 #make testing filtered df based on vars_to_keep
@@ -36,6 +41,8 @@ test_df_filtered = test_df[vars_to_keep]
 #keep only 0, 1, and 4 in Label column of test_df_filtered
 test_df_filtered = test_df_filtered[test_df_filtered[' Label'].isin([0, 2, 5])]
 
+#print test_df_filtered label value counts
+print("Testing Label Value Counts:")
 print(test_df_filtered[' Label'].value_counts())
 
 
@@ -111,3 +118,68 @@ print("Combined Recall:", combined_recall)
 print("Combined False Positive Rate:", false_positive_rate)
 print("Combined Confusion Matrix:")
 print(combined_conf_matrix)
+
+
+#Print likelihood of each class
+print("Likelihood of each class:")
+probabilities = combination.predict_proba(test_X)
+
+# Print the probabilities for the first few samples
+for i in range(min(500, len(test_X))):
+    #formatted_probs = [f"{prob:.2f}" for prob in probs]
+    #print(formatted_probs)
+    print(f"Test Instance {i + 1}:")
+    print(f"Features: {test_X[i]}")
+    
+    # If your model supports feature importances (e.g., RandomForest), you can print them
+    if hasattr(combination, 'feature_importances_'):
+        print(f"Feature Importances: {combination.feature_importances_}")
+    
+    # Print predicted probabilities for each class
+    print("Predicted Probabilities:")
+    for j, prob in enumerate(probabilities[i]):
+        print(f"Class {j}: {prob:.4f}")
+    
+    print("\n")
+
+'''
+#wrap stacking model in callable function
+def model_predict_proba(X):
+    return combination.predict_proba(X)
+
+masker = shap.maskers.Independent(data=X_train)
+
+# Explain the model's predictions using SHAP values
+#explainer = shap.Explainer(model_predict_proba, masker=masker)
+#shap_values = explainer.shap_values(test_X)
+
+explainer = shap.Explainer(combination)
+shap_values = explainer.shap_values(test_X)
+
+# Print SHAP values for the first few samples
+for i in range(min(100, len(test_X))):
+    sample_features = test_X[i, :]
+    sample_shap_values = explainer.shap_values(test_X[i:i+1])  # Compute SHAP values for the sample
+    prediction = combination.predict_proba([sample_features])[0]
+
+    print(f"\nSample {i + 1}:")
+    print(f"Features: {sample_features}")
+    print(f"SHAP Values: {sample_shap_values}")
+    print(f"Raw Probabilities: {prediction}")
+    print(f"Predicted Class: {combination.predict([sample_features])[0]}")
+
+
+# Print feature contributions for the first few samples
+for i in range(min(5, len(test_X))):
+    sample_features = test_X[i:i+1]
+    
+    # Get predictions and feature contributions
+    prediction, bias, contributions = ti.predict(combination, sample_features)
+    
+    print(f"\nSample {i + 1}:")
+    print(f"Features: {sample_features}")
+    print(f"Prediction: {prediction}")
+    print(f"Bias: {bias}")
+    print(f"Feature Contributions: {contributions}")
+    print(f"Predicted Class: {combination.predict(sample_features)[0]}")
+'''
