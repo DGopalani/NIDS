@@ -11,17 +11,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler 
 from sklearn.ensemble import StackingClassifier, RandomForestClassifier
 from treeinterpreter import treeinterpreter as ti
-#import UDPLag
+import UDPLag
 import UDP
-#import SYN
+import SYN
 import MSSQL
 
 
 #Overall training dataset - contains UDP and UDPLag and SYN data
-frames = [UDP.UDP_df, MSSQL.MSSQL_df]
+frames = [UDPLag.UDPLag_df, UDP.UDP_df, SYN.SYN_df]
 #set vars to keep to UDP_vars_to_keep + UDPLag_vars_to_keep - Label
-vars_to_keep = UDP.UDP_vars_to_keep + MSSQL.MSSQL_vars_to_keep[:-1]
+vars_to_keep = UDPLag.UDPLag_vars_to_keep + UDP.UDP_vars_to_keep + SYN.SYN_vars_to_keep
 vars_to_keep = list(set(vars_to_keep))
+print("vars_to_keep:", vars_to_keep)
 #filter df based on filter list defined above
 df = pd.concat(frames)
 df_filtered = df[vars_to_keep]
@@ -31,15 +32,15 @@ print("Training Label Value Counts:")
 print(df_filtered[' Label'].value_counts())
 
 #Overall test dataset
-test_df = pd.read_csv('Data/03-11/UDP.csv')
+test_df = pd.read_csv('Data/03-11/UDPLag.csv')
 #apply feature mapping on label column
 test_df[' Label'] = test_df[' Label'].map({'BENIGN': 0, 'UDPLag': 1, 'UDP': 2, 'Syn': 3, 'WebDDoS': 4, 'MSSQL': 5})
 #rename wrongly named column for consistency
-#test_df.rename(columns={'_bInit_Winytes_forward': 'Init_Win_bytes_forward'}, inplace=True)
+test_df.rename(columns={'_bInit_Winytes_forward': 'Init_Win_bytes_forward'}, inplace=True)
 #make testing filtered df based on vars_to_keep
 test_df_filtered = test_df[vars_to_keep]
 #keep only 0, 1, and 4 in Label column of test_df_filtered
-test_df_filtered = test_df_filtered[test_df_filtered[' Label'].isin([0, 2, 5])]
+test_df_filtered = test_df_filtered[test_df_filtered[' Label'].isin([0, 1, 2, 3])]
 
 #print test_df_filtered label value counts
 print("Testing Label Value Counts:")
@@ -58,24 +59,24 @@ from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
 
 #Setup UDPLag Model
-#model_UDPLag = make_pipeline(MinMaxScaler(), RandomForestClassifier(n_estimators=5))
-#model_UDPLag.fit(UDPLag.UDPLag_X_train, UDPLag.UDPLag_y_train.values.ravel())
+model_UDPLag = make_pipeline(MinMaxScaler(), RandomForestClassifier(n_estimators=5))
+model_UDPLag.fit(UDPLag.UDPLag_X_train, UDPLag.UDPLag_y_train.values.ravel())
 
 #Setup UDP Model
 model_UDP = make_pipeline(MinMaxScaler(), RandomForestClassifier(n_estimators=5))
 model_UDP.fit(UDP.UDP_X_train, UDP.UDP_y_train.values.ravel())
 
+#Setup SYN Model
+model_SYN = make_pipeline(MinMaxScaler(), RandomForestClassifier(n_estimators=5))
+model_SYN.fit(SYN.SYN_X_train, SYN.SYN_y_train.values.ravel())
 
+'''
 #Setup MSSQL Model
 model_MSSQL = make_pipeline(MinMaxScaler(), RandomForestClassifier(n_estimators=2))
 model_MSSQL.fit(MSSQL.MSSQL_X_train, MSSQL.MSSQL_y_train.values.ravel())
+'''
 
-
-#Setup SYN Model
-#model_SYN = make_pipeline(MinMaxScaler(), RandomForestClassifier(n_estimators=5))
-#model_SYN.fit(SYN.SYN_X_train, SYN.SYN_y_train.values.ravel())
-
-print("UDP + MSSQL")
+print("UDPLag + UDP + Syn Model Metrics:")
 
 #prepare overall train data
 y_train = df_filtered[[' Label']]
@@ -95,7 +96,8 @@ print(y_train.shape, test_y.shape)
 # Combine models using a meta-model (Stacking)
 combination = StackingClassifier(estimators=[
     ('UDP', model_UDP), 
-    ('MSSQL', model_MSSQL)])
+    ('UDPLag', model_UDPLag),
+    ('SYN', model_SYN)])
 combination.fit(X_train, y_train.values.ravel())
 
 # Test the meta-model on the combined test data
@@ -141,6 +143,12 @@ for i in range(min(500, len(test_X))):
         print(f"Class {j}: {prob:.4f}")
     
     print("\n")
+
+
+
+
+
+
 
 '''
 #wrap stacking model in callable function

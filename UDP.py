@@ -84,4 +84,3 @@ def run_model():
     print("Confusion Matrix:")
     print(conf_matrix)
 
-run_model()
