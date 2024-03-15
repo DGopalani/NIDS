@@ -1,0 +1,8 @@
+Set Up Instructions
+-Download the data used in the project here: https://www.unb.ca/cic/datasets/ddos-2019.html. Download the CSV .zip files - "CSV-01-12.zip" and "CSV-03-11.zip".
+
+-Organize the data as follows. Create a subdirectory, "Data", inside the current root directory. Inside this directory create two subdirectories, "01-12" and "03-11". Unzip the contents of "CSV-01-12.zip" into "01-12" and unzip the contents of "CSV-03-11.zip" into "03-11".
+
+
+Run Instructions
+-Run the command, "python3 NIDSGUI.py" to run the program.
